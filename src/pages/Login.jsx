@@ -5,8 +5,6 @@ import Errors from "../components/Errors";
 
 import { useAuth } from "../context/Auth";
 
-// TODO: Implement user login persistence
-
 const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

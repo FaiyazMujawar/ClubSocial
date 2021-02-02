@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { Loader } from "semantic-ui-react";
 import { auth } from "../firebase/config";
 
 const AuthContext = createContext({
   user: null,
   login: async (_email, _password) => {},
   signup: async (_email, _password) => {},
+  logout: async () => {},
 });
 
 const useAuth = () => useContext(AuthContext);
@@ -14,34 +16,23 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const unsubscribe = auth.onAuthStateChanged((user) => {
-    console.log("here");
+    console.log({ user });
     setUser(user);
     setLoading(false);
   });
 
   useEffect(() => unsubscribe);
 
-  const signup = async (email, password) => {
-    try {
-      await auth.createUserWithEmailAndPassword(email, password);
-    } catch (error) {
-      setUser(null);
-      throw error;
-    }
-  };
+  const signup = async (email, password) =>
+    auth.createUserWithEmailAndPassword(email, password);
 
-  const login = async (email, password) => {
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
-    } catch (error) {
-      setUser(null);
-      throw error;
-    }
-  };
+  const login = async (email, password) =>
+    auth.signInWithEmailAndPassword(email, password);
 
+  const logout = async () => auth.signOut();
   return (
-    <AuthContext.Provider value={{ user, login, signup }}>
-      {!loading && children}
+    <AuthContext.Provider value={{ user, login, signup, logout }}>
+      {loading ? <Loader /> : children}
     </AuthContext.Provider>
   );
 };
