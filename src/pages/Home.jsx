@@ -2,10 +2,10 @@ import { Button } from "semantic-ui-react";
 import { useAuth } from "../context/Auth";
 
 const Home = () => {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   return (
     <>
-      <h1>Home Page</h1>
+      <h1>Welcome, {user?.firstName || "user"}</h1>
       <Button onClick={logout}>Log out</Button>
     </>
   );

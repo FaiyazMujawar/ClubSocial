@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Loader } from "semantic-ui-react";
-import { auth } from "../firebase/config";
+import { auth, firestore, timestamp } from "../firebase/config";
 
 const AuthContext = createContext({
   user: null,
@@ -12,27 +12,57 @@ const AuthContext = createContext({
 const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const unsubscribe = auth.onAuthStateChanged((user) => {
-    console.log({ user });
-    setUser(user);
-    setLoading(false);
-  });
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        // FIXME: setIsLoading here raises 'Cannot perform React State Update on unmounted component' warning.
+        setIsLoading(true);
+        const { email, uid, photoURL, displayName } = user;
+        firestore
+          .collection("users")
+          .doc(uid)
+          .get()
+          .then((doc) => {
+            if (doc.exists) {
+              const { firstName, lastName } = doc.data();
+              setCurrentUser({
+                email,
+                uid,
+                photoURL,
+                displayName,
+                firstName,
+                lastName,
+              });
+            }
+            setIsLoading(false);
+          });
+      } else {
+        setCurrentUser(null);
+        setIsLoading(false);
+      }
+    });
+    return unsubscribe;
+  }, []);
 
-  useEffect(() => unsubscribe);
-
-  const signup = async (email, password) =>
-    auth.createUserWithEmailAndPassword(email, password);
+  const signup = async (firstName, lastName, dob, gender, email, password) => {
+    console.log({ firstName, lastName, email, password, dob, gender });
+    const user = await auth.createUserWithEmailAndPassword(email, password);
+    await firestore
+      .collection("users")
+      .doc(user.user.uid)
+      .set({ firstName, lastName, dob, gender, createdOn: timestamp() });
+  };
 
   const login = async (email, password) =>
     auth.signInWithEmailAndPassword(email, password);
 
   const logout = async () => auth.signOut();
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout }}>
-      {loading ? <Loader /> : children}
+    <AuthContext.Provider value={{ user: currentUser, login, signup, logout }}>
+      {isLoading ? <Loader /> : children}
     </AuthContext.Provider>
   );
 };
