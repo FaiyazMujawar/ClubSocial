@@ -1,20 +1,29 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Card, Form, Icon, Label, TextArea } from "semantic-ui-react";
+import {
+  Button,
+  Card,
+  Dimmer,
+  Form,
+  Icon,
+  Label,
+  Loader,
+  Message,
+  TextArea,
+} from "semantic-ui-react";
+
 import useStorage from "../hooks/useStorage";
 import useFile from "../hooks/useFile";
+import { useAuth } from "../context/Auth";
 
 const CreatePost = () => {
   const [text, setText] = useState("");
   const [post, setPost] = useState(null);
   const [file, setFile] = useState(null);
+  const [showSuccessMsg, setShowSuccessMsg] = useState(false);
+
+  const { user } = useAuth();
 
   const inputRef = useRef();
-
-  const user = {
-    uid: "yRvVtqMzlhSqWV3ofox9pUlV5js2",
-    firstName: "John",
-    lastName: "Doe",
-  };
 
   const { isLoading } = useStorage(post);
 
@@ -24,24 +33,41 @@ const CreatePost = () => {
     setPost({
       uid: user.uid,
       text: text,
-      userFirstName: user.firstName,
-      userLastName: user.lastName,
+      firstName: user.firstName,
+      lastName: user.lastName,
       media: file,
     });
   };
 
   useEffect(() => {
-    if (!isLoading) setPost(null);
-  }, [isLoading]);
+    if (!isLoading) {
+      if (post) {
+        setShowSuccessMsg(true);
+        setInterval(() => {
+          setShowSuccessMsg(false);
+        }, 2000);
+      }
+      setPost(null);
+      setFile(null);
+      setText("");
+    }
+  }, [isLoading, post]);
 
-  // TODO: implement uploading post indication
-
-  // TODO: clear all the inputs after post is uploaded
   return (
     <Card fluid>
+      {showSuccessMsg && (
+        <Card.Content>
+          <Message floating success content={"Post uploaded"} />
+        </Card.Content>
+      )}
       <Card.Content>
-        <Card.Header>Create Post</Card.Header>
+        <Card.Header>
+          <h3>Create Post</h3>
+        </Card.Header>
       </Card.Content>
+      <Dimmer inverted active={isLoading}>
+        <Loader content={"Uploading post!"} />
+      </Dimmer>
       <Card.Content>
         <Form>
           <TextArea
@@ -83,6 +109,7 @@ const CreatePost = () => {
           color="blue"
           floated="right"
           content="Post!"
+          disabled={text.trim().length === 0 && file === null}
           onClick={handleSubmit}
         />
       </Card.Content>

@@ -19,6 +19,7 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         // FIXME: setIsLoading here raises 'Cannot perform React State Update on unmounted component' warning.
+        console.log("onAuthStateChanged called");
         setIsLoading(true);
         const { email, uid, photoURL, displayName } = user;
         firestore
@@ -48,7 +49,6 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const signup = async (firstName, lastName, dob, gender, email, password) => {
-    console.log({ firstName, lastName, email, password, dob, gender });
     const user = await auth.createUserWithEmailAndPassword(email, password);
     await firestore
       .collection("users")

@@ -1,8 +1,27 @@
 .container {
+  min-width: 500px;
   width: 40%;
   margin: auto;
 }
 
 .opt-img {
   font-size: 3rem;
+}
+
+.full-width {
+  max-width: 100% !important;
+}
+
+.comment-section {
+  margin-top: 1rem;
+}
+
+.no-comment {
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+}
+
+.text-muted {
+  color: grey;
 }

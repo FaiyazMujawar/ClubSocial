@@ -137,7 +137,7 @@ const SignUp = () => {
           </Form>
         </Card.Content>
         <Card.Content textAlign="center">
-          Don't have an account? <Link to="/signup">Sign Up!</Link>
+          Already have an account? <Link to="/login">Log In!</Link>
         </Card.Content>
       </Card>
     </div>

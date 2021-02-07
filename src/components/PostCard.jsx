@@ -1,41 +1,89 @@
-import { Button, Card, Grid, Icon } from "semantic-ui-react";
+import { useRef, useState } from "react";
+import { Button, Card, Input } from "semantic-ui-react";
 
-const PostCard = ({
-  post: { text, userFirstName, userLastName, createdAt },
-}) => {
+import Avatar from "./Avatar";
+import CommentButton from "./CommentButton";
+import LikeButton from "./LikeButton";
+import PostModal from "./PostModal";
+import postComment from "../functions/PostComment";
+import { useAuth } from "../context/Auth";
+
+const PostCard = ({ post }) => {
+  const {
+    id,
+    text,
+    firstName: authorFirstName,
+    lastName: authorLastName,
+    media,
+    likeCount,
+    commentCount: comments,
+  } = post;
+
+  const {
+    user: { uid: userId, firstName, lastName },
+  } = useAuth();
+
+  const [open, setOpen] = useState(false);
+
+  const [comment, setComment] = useState("");
+  const [commentCount, setCommentCount] = useState(comments);
+  const [uploadingComment, setUploadingComment] = useState(false);
+  const inputRef = useRef(null);
+
+  const handleSubmit = async () => {
+    setUploadingComment(true);
+    try {
+      await postComment(id, userId, firstName, lastName, comment);
+      setCommentCount(commentCount + 1);
+    } catch (error) {}
+    setUploadingComment(false);
+    setComment("");
+  };
+
   return (
     <Card fluid>
+      <PostModal post={post} open={open} setOpen={setOpen} />
       <Card.Content>
-        <Grid>
-          <Grid.Column width="2">
-            <img
-              src="https://img.icons8.com/color/56/000000/user-male-circle--v1.png"
-              alt="profile"
-            />
-          </Grid.Column>
-          <Grid.Column width="14" verticalAlign="middle">
-            <Card.Header>
-              <h3>
-                {userFirstName} {userLastName}
-              </h3>
-            </Card.Header>
-            <Card.Meta>6 February 2021</Card.Meta>
-          </Grid.Column>
-        </Grid>
-      </Card.Content>
-      <Card.Content>{text}</Card.Content>
-      <Card.Content extra>
-        <Button
-          compact
-          size="tiny"
-          style={{ backgroundColor: "transparent" }}
-          icon={<Icon size="large" name="like" />}
+        <Avatar
+          authorFirstName={authorFirstName}
+          authorLastName={authorLastName}
         />
-        <Button
-          compact
-          size="tiny"
-          style={{ backgroundColor: "transparent" }}
-          icon={<Icon size="large" name="comments" color="blue" />}
+      </Card.Content>
+      <Card.Content onClick={() => setOpen(true)}>
+        <div>{text}</div>
+      </Card.Content>
+      {media && (
+        <img
+          onClick={() => setOpen(true)}
+          alt="post-media"
+          width="100%"
+          src={media}
+        />
+      )}
+      <Card.Content extra>
+        <LikeButton postId={id} userId={userId} likes={likeCount} />
+        <CommentButton
+          commentCount={commentCount}
+          onClick={() => inputRef.current.focus()}
+        />
+        <Input
+          fluid
+          size="mini"
+          ref={inputRef}
+          value={comment}
+          icon="comment"
+          iconPosition="left"
+          placeholder="Write a comment"
+          loading={uploadingComment}
+          onChange={(event) => setComment(event.target.value)}
+          action={
+            <Button
+              color="blue"
+              disabled={comment.trim().length === 0}
+              icon="edit"
+              onClick={handleSubmit}
+            />
+          }
         />
       </Card.Content>
     </Card>

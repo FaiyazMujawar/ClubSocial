@@ -2,27 +2,22 @@ import { useState, useEffect } from "react";
 import { storage, firestore, timestamp } from "../firebase/config";
 
 const useStorage = (post) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log({ post });
     // Saves the new post to firestore
-    const savePost = async ({
-      uid,
-      userFirstName,
-      userLastName,
-      text,
-      media,
-    }) => {
+    const savePost = async ({ uid, firstName, lastName, text, media }) => {
       try {
         await firestore.collection("posts").add({
           userId: uid,
-          userFirstName,
-          userLastName,
+          firstName,
+          lastName,
           text,
           media,
-          createdAt: timestamp(),
+          likeCount: 0,
+          commentCount: 0,
+          createdOn: timestamp(),
         });
       } catch (error) {
         setError(error);
@@ -43,11 +38,10 @@ const useStorage = (post) => {
           (error) => setError(error),
           async () => {
             const url = await fileRef.getDownloadURL();
-            console.log({ url });
             savePost({
               uid: post.uid,
-              userFirstName: post.userFirstName,
-              userLastName: post.userLastName,
+              firstName: post.firstName,
+              lastName: post.lastName,
               text: post.text,
               media: url,
             });
@@ -56,8 +50,8 @@ const useStorage = (post) => {
       } else {
         savePost({
           uid: post.uid,
-          userFirstName: post.userFirstName,
-          userLastName: post.userLastName,
+          firstName: post.firstName,
+          lastName: post.lastName,
           text: post.text,
           media: null,
         });
