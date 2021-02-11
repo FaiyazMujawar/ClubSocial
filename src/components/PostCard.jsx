@@ -42,7 +42,12 @@ const PostCard = ({ post }) => {
 
   return (
     <Card fluid>
-      <PostModal post={post} open={open} setOpen={setOpen} />
+      <PostModal
+        incrementCount={setCommentCount}
+        post={post}
+        open={open}
+        setOpen={setOpen}
+      />
       <Card.Content>
         <Avatar
           authorFirstName={authorFirstName}

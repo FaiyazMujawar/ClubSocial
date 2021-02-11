@@ -9,7 +9,7 @@ import { useAuth } from "../context/Auth";
 import Avatar from "./Avatar";
 import CommentsSection from "./CommentsSection";
 
-const PostCard = ({ post, setOpen, open, user }) => {
+const PostCard = ({ post, setOpen, open, incrementCount }) => {
   const {
     id,
     text,
@@ -23,7 +23,6 @@ const PostCard = ({ post, setOpen, open, user }) => {
   const {
     user: { uid: userId, firstName, lastName },
   } = useAuth();
-  const { uid: userId, firstName, lastName } = user;
 
   const [comment, setComment] = useState("");
   const [commentCount, setCommentCount] = useState(comments);
@@ -46,6 +45,7 @@ const PostCard = ({ post, setOpen, open, user }) => {
         comment
       );
       setCommentCount(commentCount + 1);
+      incrementCount(commentCount);
       setCommentsList([newComment, ...commentsList]);
     } catch (error) {}
     setUploadingComment(false);
@@ -63,14 +63,14 @@ const PostCard = ({ post, setOpen, open, user }) => {
       <Modal.Content>
         <Grid>
           <Grid.Column width="10">
-            <Card fluid>
+            <Card style={{ height: "100%" }} fluid>
               <Card.Content>
                 <Avatar
                   authorFirstName={authorFirstName}
                   authorLastName={authorLastName}
                 />
               </Card.Content>
-              <Card.Content>
+              <Card.Content style={{ height: "100%" }}>
                 <p>{text}</p>
               </Card.Content>
               {media && <img alt="post-media" width="100%" src={media} />}
