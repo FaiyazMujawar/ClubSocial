@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Card, Input, Modal, Grid } from "semantic-ui-react";
+import { Button, Card, Input, Modal, Grid, Icon } from "semantic-ui-react";
 
-import CommentButton from "./CommentButton";
-import LikeButton from "./LikeButton";
+import Avatar from "./Avatar";
+import CommentsSection from "./CommentsSection";
+import LikeButton from "../components/LikeButton";
+import CommentButton from "../components/CommentButton";
 import postComment from "../functions/PostComment";
 import getComments from "../functions/GetComments";
 import { useAuth } from "../context/Auth";
-import Avatar from "./Avatar";
-import CommentsSection from "./CommentsSection";
 
 const PostCard = ({ post, setOpen, open, incrementCount }) => {
   const {
@@ -63,6 +63,7 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
       <Modal.Content>
         <Grid>
           <Grid.Column width="10">
+            {/* Post Content */}
             <Card style={{ height: "100%" }} fluid>
               <Card.Content>
                 <Avatar
@@ -75,14 +76,24 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
               </Card.Content>
               {media && <img alt="post-media" width="100%" src={media} />}
               <Card.Content>
-                <LikeButton postId={id} userId={userId} likes={likeCount} />
-                <CommentButton
-                  commentCount={commentCount}
-                  onClick={() => inputRef.current.focus()}
-                />
+                <Grid>
+                  <Grid.Column width="14" verticalAlign="middle">
+                    <LikeButton likes={likes} postId={postId} userId={userId} />
+                    <CommentButton commentCount={comments} onClick={onClick} />
+                  </Grid.Column>
+                  <Grid.Column
+                    width="2"
+                    verticalAlign="middle"
+                    textAlign="center"
+                  >
+                    <Icon color="red" onClick={handleDelete} name="trash" />
+                  </Grid.Column>
+                </Grid>
               </Card.Content>
             </Card>
           </Grid.Column>
+
+          {/* Comments */}
           <Grid.Column width="6">
             <Card style={{ height: "100%" }} fluid>
               <Card.Content>
