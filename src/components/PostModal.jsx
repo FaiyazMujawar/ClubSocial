@@ -7,6 +7,7 @@ import LikeButton from "../components/LikeButton";
 import CommentButton from "../components/CommentButton";
 import postComment from "../functions/PostComment";
 import getComments from "../functions/GetComments";
+import deletePost from "../functions/DeletePost";
 import { useAuth } from "../context/Auth";
 
 const PostCard = ({ post, setOpen, open, incrementCount }) => {
@@ -52,6 +53,11 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
     setComment("");
   };
 
+  const handleDelete = async () => {
+    deletePost(id, media);
+    setOpen(false);
+  };
+
   return (
     <Modal
       size="large"
@@ -78,8 +84,8 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
               <Card.Content>
                 <Grid>
                   <Grid.Column width="14" verticalAlign="middle">
-                    <LikeButton likes={likes} postId={postId} userId={userId} />
-                    <CommentButton commentCount={comments} onClick={onClick} />
+                    <LikeButton likes={likeCount} postId={id} userId={userId} />
+                    <CommentButton commentCount={comments} onClick={() => {}} />
                   </Grid.Column>
                   <Grid.Column
                     width="2"
