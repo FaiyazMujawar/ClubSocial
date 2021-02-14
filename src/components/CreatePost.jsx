@@ -79,7 +79,9 @@ const CreatePost = () => {
       </Card.Content>
       {imageSrc && (
         <Card.Content>
-          <img width="100%" src={imageSrc} alt="selected file"></img>
+          <div className="img-wrap">
+            <img src={imageSrc} alt="selected file"></img>
+          </div>
         </Card.Content>
       )}
       <Card.Content extra>
