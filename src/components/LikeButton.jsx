@@ -17,7 +17,10 @@ const LikeButton = ({ postId, userId, likes }) => {
   };
 
   useEffect(() => {
-    getIsLiked(postId, userId).then((isLiked) => setLiked(isLiked));
+    getIsLiked(postId, userId).then((isLiked) => {
+      console.log("get isliked called");
+      setLiked(isLiked);
+    });
   }, [postId, userId]);
 
   return (

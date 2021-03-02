@@ -16,6 +16,7 @@ const PostCard = ({ post }) => {
     lastName: authorLastName,
     media,
     likeCount,
+    createdOn,
     commentCount: comments,
   } = post;
 
@@ -50,6 +51,9 @@ const PostCard = ({ post }) => {
       />
       <Card.Content>
         <Avatar
+          uid={post.userId}
+          profileImg={post.userProfile}
+          createdOn={createdOn}
           authorFirstName={authorFirstName}
           authorLastName={authorLastName}
         />

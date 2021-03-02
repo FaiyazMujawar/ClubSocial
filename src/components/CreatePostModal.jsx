@@ -36,23 +36,26 @@ const CreatePostModal = ({ open, setOpen }) => {
       text: text,
       firstName: user.firstName,
       lastName: user.lastName,
+      userProfile: user.profileImg,
       media: file,
     });
   };
 
   useEffect(() => {
-    if (!isLoading) {
-      if (post) {
-        setShowSuccessMsg(true);
-        setInterval(() => {
-          setShowSuccessMsg(false);
-        }, 2000);
+    if (open) {
+      if (!isLoading) {
+        if (post) {
+          setShowSuccessMsg(true);
+          setInterval(() => {}, 2000);
+        }
       }
+    } else {
+      setText("");
       setPost(null);
       setFile(null);
-      setText("");
+      setShowSuccessMsg(false);
     }
-  }, [isLoading, post]);
+  }, [isLoading, post, open, setOpen]);
 
   return (
     <Modal

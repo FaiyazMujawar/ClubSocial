@@ -19,23 +19,20 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         // FIXME: setIsLoading here raises 'Cannot perform React State Update on unmounted component' warning.
-        console.log("onAuthStateChanged called");
         setIsLoading(true);
-        const { email, uid, photoURL, displayName } = user;
+        const { uid } = user;
         firestore
           .collection("users")
           .doc(uid)
           .get()
           .then((doc) => {
             if (doc.exists) {
-              const { firstName, lastName } = doc.data();
+              const { firstName, lastName, profileImg } = doc.data();
               setCurrentUser({
-                email,
                 uid,
-                photoURL,
-                displayName,
                 firstName,
                 lastName,
+                profileImg,
               });
             }
             setIsLoading(false);
@@ -50,10 +47,16 @@ const AuthProvider = ({ children }) => {
 
   const signup = async (firstName, lastName, dob, gender, email, password) => {
     const user = await auth.createUserWithEmailAndPassword(email, password);
-    await firestore
-      .collection("users")
-      .doc(user.user.uid)
-      .set({ firstName, lastName, dob, gender, createdOn: timestamp() });
+    await firestore.collection("users").doc(user.user.uid).set({
+      firstName,
+      lastName,
+      dob,
+      gender,
+      profileImg: null,
+      relationshipStatus: null,
+      bio: "Hey there! I'm using ClubSocial!",
+      createdOn: timestamp(),
+    });
   };
 
   const login = async (email, password) =>
