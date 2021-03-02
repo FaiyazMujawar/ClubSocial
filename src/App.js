@@ -8,6 +8,7 @@ import { AuthProvider } from "./context/Auth";
 import SignUp from "./pages/SignUp";
 import LogIn from "./pages/Login";
 import Home from "./pages/Home";
+import User from "./pages/User";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Router>
           <Switch>
             <PrivateRoute exact path="/" component={Home} />
+            <PrivateRoute exact path="/user/:id" component={User} />
             <Route exact path="/login" component={LogIn} />
             <Route exact path="/signup" component={SignUp} />
           </Switch>

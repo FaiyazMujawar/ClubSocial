@@ -16,6 +16,7 @@ const PostCard = ({ post }) => {
     lastName: authorLastName,
     media,
     likeCount,
+    createdOn,
     commentCount: comments,
   } = post;
 
@@ -41,7 +42,7 @@ const PostCard = ({ post }) => {
   };
 
   return (
-    <Card fluid>
+    <Card className="postcard" raised fluid>
       <PostModal
         incrementCount={setCommentCount}
         post={post}
@@ -50,20 +51,22 @@ const PostCard = ({ post }) => {
       />
       <Card.Content>
         <Avatar
+          uid={post.userId}
+          profileImg={post.userProfile}
+          createdOn={createdOn}
           authorFirstName={authorFirstName}
           authorLastName={authorLastName}
         />
       </Card.Content>
-      <Card.Content onClick={() => setOpen(true)}>
-        <div>{text}</div>
-      </Card.Content>
+      {text && (
+        <Card.Content onClick={() => setOpen(true)}>
+          <div>{text}</div>
+        </Card.Content>
+      )}
       {media && (
-        <img
-          onClick={() => setOpen(true)}
-          alt="post-media"
-          width="100%"
-          src={media}
-        />
+        <div className="img-wrap">
+          <img onClick={() => setOpen(true)} alt="post-media" src={media} />
+        </div>
       )}
       <Card.Content extra>
         <LikeButton postId={id} userId={userId} likes={likeCount} />

@@ -1,4 +1,5 @@
-import { firestore, storage } from "../firebase/config";
+import { firestore } from "../firebase/config";
+import deleteImage from "./DeleteImage";
 
 /**
  * Deletes the post with specified ID & all of it's related content from
@@ -6,10 +7,8 @@ import { firestore, storage } from "../firebase/config";
  * @param {String} postId ID of the post
  */
 const deletePost = async (postId, imageURL) => {
-  if (imageURL) {
-    const imageRef = storage.refFromURL(imageURL);
-    imageRef.delete();
-  }
+  await deleteImage(imageURL);
+
   await firestore.collection("posts").doc(postId).delete();
   const likes = await firestore
     .collection("likes")

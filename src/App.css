@@ -1,11 +1,46 @@
+:root {
+  --background: #e5e5e5;
+  --header: #ef476f;
+}
+
+body {
+  background-color: var(--background);
+  background-image: url("https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/pattern-30.svg");
+  background-repeat: repeat;
+}
+
+/* NavBar */
+.navbar {
+  position: sticky;
+  top: 0%;
+  left: 0%;
+  padding: 1rem;
+  color: white;
+  background-color: var(--header);
+  z-index: 1;
+  box-shadow: 0 5px 6px -3px grey;
+}
+
+.title {
+  font-size: 2.5rem;
+}
+
 .container {
+  padding: 2rem;
   min-width: 500px;
-  width: 40%;
+  width: 55vw;
   margin: auto;
 }
 
-.opt-img {
-  font-size: 3rem;
+.form-wrap {
+  height: 90vh;
+  margin: auto;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .full-width {
@@ -24,4 +59,86 @@
 
 .text-muted {
   color: grey;
+}
+
+/* Post Media */
+.img-wrap {
+  overflow: hidden;
+  position: relative;
+  max-height: 60vh;
+}
+
+.img-wrap img {
+  width: 100%;
+}
+
+.zoom-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  color: white;
+}
+
+.zoom-btn:hover {
+  color: whitesmoke;
+  font-size: 15px;
+}
+
+.login-info {
+  color: white;
+}
+
+.login-info label {
+  font-weight: bold;
+}
+
+.login-info span {
+  display: block;
+  font-weight: bold;
+  font-size: 1.6rem;
+}
+
+/* Create post button */
+.ui.create-post-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  border-radius: 5rem;
+  padding: 1.2rem 2rem;
+  color: white;
+  background-color: var(--header);
+}
+
+.ui.postcard {
+  padding-bottom: 8px;
+}
+
+footer {
+  text-align: center;
+  padding-bottom: 2rem;
+}
+footer .ui.label {
+  background-color: #fff;
+  padding: 15px 30px;
+  border: 2px solid black;
+}
+
+/* User Page */
+.username {
+  font-size: 2.5rem;
+}
+
+.bio {
+  margin-top: 5px;
+  font-size: 1.2rem;
+}
+
+.about {
+  position: sticky;
+  top: 110px;
+}
+
+.profile-img {
+  border-radius: 100%;
+  background-color: transparent;
 }

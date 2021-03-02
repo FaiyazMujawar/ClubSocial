@@ -10,9 +10,9 @@ const getComments = async (postId) => {
 
   const commentsData = await firestore
     .collection("comments")
+    .orderBy("createdOn", "desc")
     .where("postId", "==", postId)
     .get();
-  console.log(commentsData.docs);
   commentsData.forEach((comment) =>
     comments.push({ id: comment.id, ...comment.data() })
   );

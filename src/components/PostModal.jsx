@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Button, Card, Input, Modal, Grid, Icon } from "semantic-ui-react";
+import {
+  Button,
+  Card,
+  Input,
+  Modal,
+  Grid,
+  Icon,
+  Popup,
+} from "semantic-ui-react";
 
 import Avatar from "./Avatar";
 import CommentsSection from "./CommentsSection";
@@ -10,7 +18,7 @@ import getComments from "../functions/GetComments";
 import deletePost from "../functions/DeletePost";
 import { useAuth } from "../context/Auth";
 
-const PostCard = ({ post, setOpen, open, incrementCount }) => {
+const PostModal = ({ post, setOpen, open, incrementCount }) => {
   const {
     id,
     text,
@@ -19,6 +27,7 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
     media,
     likeCount,
     commentCount: comments,
+    createdOn,
   } = post;
 
   const {
@@ -32,8 +41,8 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    getComments(id).then((list) => setCommentsList(list));
-  }, [id]);
+    if (open) getComments(id).then((list) => setCommentsList(list));
+  }, [id, open]);
 
   const handleSubmit = async () => {
     setUploadingComment(true);
@@ -73,14 +82,34 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
             <Card style={{ height: "100%" }} fluid>
               <Card.Content>
                 <Avatar
+                  uid={userId}
+                  createdOn={createdOn}
                   authorFirstName={authorFirstName}
                   authorLastName={authorLastName}
                 />
               </Card.Content>
-              <Card.Content style={{ height: "100%" }}>
-                <p>{text}</p>
-              </Card.Content>
-              {media && <img alt="post-media" width="100%" src={media} />}
+              {text && (
+                <Card.Content style={{ height: media ? "auto" : "100%" }}>
+                  <p>{text}</p>
+                </Card.Content>
+              )}
+              {media && (
+                <div className="img-wrap">
+                  <img alt="post-media" src={media} />
+                  <Popup
+                    basic
+                    inverted
+                    content="Click to view enlarged image"
+                    position="top right"
+                    size="mini"
+                    trigger={
+                      <a className="zoom-btn" href={media} target="_tab">
+                        <Icon name="expand" />
+                      </a>
+                    }
+                  />
+                </div>
+              )}
               <Card.Content>
                 <Grid>
                   <Grid.Column width="14" verticalAlign="middle">
@@ -92,7 +121,9 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
                     verticalAlign="middle"
                     textAlign="center"
                   >
-                    <Icon color="red" onClick={handleDelete} name="trash" />
+                    {post.userId === userId && (
+                      <Icon color="red" onClick={handleDelete} name="trash" />
+                    )}
                   </Grid.Column>
                 </Grid>
               </Card.Content>
@@ -136,4 +167,4 @@ const PostCard = ({ post, setOpen, open, incrementCount }) => {
   );
 };
 
-export default PostCard;
+export default PostModal;

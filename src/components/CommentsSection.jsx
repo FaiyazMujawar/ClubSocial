@@ -1,6 +1,7 @@
 import { Comment, Header } from "semantic-ui-react";
 
 const CommentsSection = ({ commentsList }) => {
+  console.log(commentsList);
   let index = 0;
   return (
     <div className="comment-section">
